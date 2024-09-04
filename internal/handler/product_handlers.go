@@ -2,17 +2,17 @@ package handler
 
 import (
 	"encoding/json"
-	"net/http"
-	"product-service/internal/service"
-	"product-service/internal/dto"
 	"github.com/gorilla/mux"
+	"net/http"
+	"product-service/internal/dto"
+	"product-service/internal/service"
 )
 
 type Handler struct {
 	productService *service.ProductService
 }
 
-// constructor
+// NewHandler constructor
 func NewHandler(productService *service.ProductService) *Handler {
 	return &Handler{
 		productService: productService,
@@ -28,7 +28,10 @@ func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(products)
+	err = json.NewEncoder(w).Encode(products)
+	if err != nil {
+		return
+	}
 }
 
 func (h *Handler) GetProductById(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +44,10 @@ func (h *Handler) GetProductById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(product)
+	err = json.NewEncoder(w).Encode(product)
+	if err != nil {
+		return
+	}
 }
 
 func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +65,10 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(createdProduct)
+	err = json.NewEncoder(w).Encode(createdProduct)
+	if err != nil {
+		return
+	}
 }
 
 func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +87,10 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(updatedProduct)
+	err = json.NewEncoder(w).Encode(updatedProduct)
+	if err != nil {
+		return
+	}
 }
 
 func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
@@ -92,4 +104,5 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
 

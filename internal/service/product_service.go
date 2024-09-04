@@ -1,16 +1,16 @@
 package service
 
 import (
-    "product-service/internal/model"
-    "product-service/internal/repository"
-    "product-service/internal/dto"
-    "errors"
+	"errors"
+	"product-service/internal/dto"
+	"product-service/internal/model"
+	"product-service/internal/repository"
 )
 
 var ErrProductNotFound = errors.New("product not found")
 
 type ProductService struct {
-    repo *repository.ProductRepository 
+    repo *repository.ProductRepository
 }
 
 func NewProductService(repo *repository.ProductRepository) *ProductService {
@@ -77,6 +77,6 @@ func (s *ProductService) DeleteProduct(id string) error {
 		}
 		return err
 	}
-	
+
 	return s.repo.DeleteProduct(id)
 }

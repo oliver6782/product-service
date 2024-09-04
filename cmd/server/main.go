@@ -1,14 +1,14 @@
 package main
 
 import (
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"product-service/internal/handler"
-	"product-service/pkg/db"
 	"product-service/internal/config"
-	"product-service/internal/service"
+	"product-service/internal/handler"
 	"product-service/internal/repository"
-	"github.com/gorilla/mux"
+	"product-service/internal/service"
+	"product-service/pkg/db"
 )
 
 func main() {
@@ -17,13 +17,13 @@ func main() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	db, err := db.Connect(cfg)
+	database, err := db.Connect(cfg)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// Initialize service and handler
-	productRepository := repository.NewProductRepository(db)
+	productRepository := repository.NewProductRepository(database)
 	productService := service.NewProductService(productRepository)
 	handler := handler.NewHandler(productService)
 
