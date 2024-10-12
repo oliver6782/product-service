@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package product;  // Specifies the package for your service
+
+option go_package = "pet_consumables_store/product-service/api/gen/go/product";  // Relative Go package path
+
+// Define a ProductService with multiple RPC methods (you can expand this later)
+service ProductService {
+    // RPC to get product info by ID
+    rpc GetProductInfo (ProductRequest) returns (ProductReply) {}
+}
+
+// Message for GetProductRequest with a product ID
+message ProductRequest {
+    uint64 id = 1;
+}
+
+// Message for GetProductReply with product details
+message ProductReply {
+    uint64 id = 1;
+    string name = 2;
+    string description = 3;
+    double price = 4;
+}

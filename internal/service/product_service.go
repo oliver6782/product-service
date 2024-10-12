@@ -1,39 +1,43 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"product-service/internal/dto"
 	"product-service/internal/model"
 	"product-service/internal/repository"
+	"product-service/api/gen/go/grpc"
+	"strconv"
 )
 
 var ErrProductNotFound = errors.New("product not found")
 
 type ProductService struct {
-    repo *repository.ProductRepository
+	product.ProductServiceClient
+	repo *repository.ProductRepository
 }
 
 func NewProductService(repo *repository.ProductRepository) *ProductService {
-    return &ProductService{
-        repo: repo,
-    }
+	return &ProductService{
+		repo: repo,
+	}
 }
 
 func (s *ProductService) GetProducts() ([]model.Product, error) {
-    products, err := s.repo.GetProducts()
-    if err != nil {
-        return nil, err
-    }
-    return products, nil
+	products, err := s.repo.GetProducts()
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
 }
 
 func (s *ProductService) CreateProduct(productDTO dto.ProductDTO) (model.Product, error) {
-    product := dto.ToProduct(productDTO)
-    createdProduct, err := s.repo.CreateProduct(product)
-    if err != nil {
-        return model.Product{}, err
-    }
-    return createdProduct, nil
+	product := dto.ToProduct(productDTO)
+	createdProduct, err := s.repo.CreateProduct(product)
+	if err != nil {
+		return model.Product{}, err
+	}
+	return createdProduct, nil
 }
 
 func (s *ProductService) GetProductById(id string) (dto.ProductDTO, error) {
@@ -80,3 +84,22 @@ func (s *ProductService) DeleteProduct(id string) error {
 
 	return s.repo.DeleteProduct(id)
 }
+
+// Implement gRPC methods, for example:
+func (s *ProductService) GetProductInfo(ctx context.Context, req *product.ProductRequest) (*product.ProductReply, error) {
+    // Fetch product from repository by ID
+    productInfo, err := s.repo.GetProductById(strconv.FormatUint(req.Id, 10))
+    if err != nil {
+        return nil, errors.New("product not found")
+    }
+
+    // Return the product details in the gRPC response
+    return &product.ProductReply{
+        Id:          req.Id,
+        Name:        productInfo.Name,
+        Description: productInfo.Description,
+		Price:		 productInfo.Price,
+    }, nil
+}
+
+// Implement other gRPC methods (CreateProduct, UpdateProduct, DeleteProduct, etc.) similarly
